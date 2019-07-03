@@ -31,6 +31,7 @@ function countRequests(req, res, next) {
 
   next();
 }
+
 server.use(countRequests);
 
 // lista projetos

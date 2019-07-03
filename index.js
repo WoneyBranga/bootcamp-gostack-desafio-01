@@ -4,10 +4,12 @@ const server = express();
 
 server.use(express.json());
 
+let requestsCount = 0;
 const projects = [];
 
 //middlewares
 
+// check if id is valid
 function checkIdProject(req, res, next) {
   const { id } = req.params;
 
@@ -19,6 +21,14 @@ function checkIdProject(req, res, next) {
 
   return next();
 }
+
+//count Requests
+function countRequests(req, res, next) {
+  requestsCount++;
+  console.log(`total of ${requestsCount} requests`);
+  next();
+}
+server.use(countRequests);
 
 // lista projetos
 server.get("/projects", (req, res) => {

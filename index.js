@@ -6,13 +6,27 @@ server.use(express.json());
 
 const projects = [];
 
+//middlewares
+
+function checkIdProject(req, res, next) {
+  const { id } = req.params;
+
+  const projectExists = projects.find(p => p.id === id);
+
+  if (!projectExists) {
+    return res.status(400).json({ error: "id is not valid." });
+  }
+
+  return next();
+}
+
 // lista projetos
 server.get("/projects", (req, res) => {
   return res.json(projects);
 });
 
 //lista projeto especifico
-server.get("/projects/:index", (req, res) => {
+server.get("/projects/:index", checkIdProject, (req, res) => {
   const { index } = req.params;
 
   return res.json(projects[index]);
@@ -34,7 +48,7 @@ server.post("/projects/", (req, res) => {
 });
 
 // delete project
-server.delete("/projects/:id", (req, res) => {
+server.delete("/projects/:id", checkIdProject, (req, res) => {
   const { id } = req.params;
 
   const projectIndex = projects.findIndex(p => p.id === id);
@@ -45,7 +59,7 @@ server.delete("/projects/:id", (req, res) => {
 });
 
 // update project
-server.put("/projects/:id", (req, res) => {
+server.put("/projects/:id", checkIdProject, (req, res) => {
   const { id } = req.params;
 
   const { title } = req.body;
@@ -56,7 +70,8 @@ server.put("/projects/:id", (req, res) => {
   return res.json(project);
 });
 
-server.post("/projects/:id/tasks", (req, res) => {
+// add task to a project
+server.post("/projects/:id/tasks", checkIdProject, (req, res) => {
   const { id } = req.params;
   const { tasks } = req.body;
 

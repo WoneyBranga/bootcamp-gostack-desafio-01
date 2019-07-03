@@ -5,6 +5,7 @@ const server = express();
 server.use(express.json());
 
 let requestsCount = 0;
+
 const projects = [];
 
 //middlewares
@@ -25,7 +26,9 @@ function checkIdProject(req, res, next) {
 //count Requests
 function countRequests(req, res, next) {
   requestsCount++;
+
   console.log(`total of ${requestsCount} requests`);
+
   next();
 }
 server.use(countRequests);
@@ -83,6 +86,7 @@ server.put("/projects/:id", checkIdProject, (req, res) => {
 // add task to a project
 server.post("/projects/:id/tasks", checkIdProject, (req, res) => {
   const { id } = req.params;
+
   const { tasks } = req.body;
 
   const project = projects.find(p => p.id === id);
